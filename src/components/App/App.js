@@ -1,5 +1,7 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useRef, useState } from "react";
 import styled from "styled-components";
+import { GamePositionContext } from "../../GamePositionContext";
+import Board from "../Board";
 
 /* 
 <root>
@@ -24,109 +26,6 @@ const GameWrapper = styled.main`
   height: 100vh;
 `;
 
-// chest board
-const BoardSquare = styled.article`
-  border-left: 1px solid #333333;
-  border-top: 1px solid #333333;
-  width: 40px;
-  height: 40px;
-  position: relative;
-  display: flex;
-  flex-wrap: wrap;
-
-  &:last-child {
-    border-right: 1px solid transparent;
-    border-top: 1px solid transparent;
-    background-color: rgb(229, 227, 203);
-  }
-`;
-
-const BoardRow = styled.section`
-  display: flex;
-  background-color: #9d896c;
-
-  &:last-child ${BoardSquare} {
-    border-left: 1px solid transparent;
-    background-color: rgb(229, 227, 203);
-  }
-`;
-
-const ChestSpot = styled.div`
-  box-sizing: border-box;
-  width: 60%;
-  height: 60%;
-  display: hidden;
-  position: relative;
-  top: -30%;
-  left: -30%;
-  text-align: center;
-`;
-
-const Board = styled.section`
-  margin: 2rem 0;
-`;
-
-// chest position
-const createOneDimList = () => {
-  const positions = [];
-  for (let i = 0; i < 19; i++) {
-    positions.push(i);
-  }
-  return positions;
-};
-
-const yPositions = createOneDimList();
-const xPositions = createOneDimList();
-
-const BoardSquaresGroup = ({ yPosition }) => {
-  const structure = xPositions.map((position) => {
-    return (
-      <BoardSquare>
-        <ChestSpot
-          yPosition={yPosition}
-          xPosition={position}
-          isOccupied="false"
-        />
-      </BoardSquare>
-    );
-  });
-  return <>{structure}</>;
-};
-
-const BoardRowsGroup = () => {
-  const structure = yPositions.map((position) => {
-    return (
-      <BoardRow>
-        <BoardSquaresGroup yPosition={position} />
-      </BoardRow>
-    );
-  });
-  return <Board>{structure}</Board>;
-};
-
-// Go/chest component
-const BlackGo = styled.div`
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: black;
-  position: absolute;
-  border: 1px solid rgba(0, 0, 0, 0.5);
-  right: 0;
-  top: 0;
-`;
-
-const WhiteGo = styled.div`
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-  background: white;
-  border: 1px solid rgba(0, 0, 0, 0.5);
-  position: absolute;
-  right: 0;
-  top: 0;
-`;
-
 // Game Progress
 const GameStepsTitle = styled.h2`
   text-align: center;
@@ -139,20 +38,154 @@ const GameSteps = styled.section`
   }
 `;
 
-const GameStepsContent = styled.div`
+const GameStepsPresent = styled.div`
   font-size: 1.4rem;
+  font-weight: 700;
+  text-decoration: underline;
+  margin-bottom: 2rem;
 `;
 
+const GameStepsWrapper = styled.section`
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+`;
+
+const GameStepsContent = styled.div`
+  margin-left: 2rem;
+  margin-bottom: 1.5rem;
+`;
+
+// const GamePositionContext = createContext();
 function App() {
+  const [blackIsNext, setBlackIsNext] = useState(true);
+  const [steps, setSteps] = useState([]);
+
+  // check line
+  function checkLine(goSpots) {
+    goSpots.sort();
+    for (let i = 0; i < goSpots.length - 1; i++) {
+      // horizontal
+      let horizontal = [];
+      let holdY = goSpots[i][0];
+      let nextX = goSpots[i][1];
+
+      // vertical
+      let vertical = [];
+      let holdX = goSpots[i][1];
+      let nextY = goSpots[i][0];
+
+      // cross
+      let crossDecreY = [];
+      let crossIncreY = [];
+      let holdDecreSpot = [...goSpots[i]];
+      let holdIncreSpot = [...goSpots[i]];
+
+      for (let j = i + 1; j < goSpots.length; j++) {
+        //horizontal line check
+        if (holdY === goSpots[j][0] && nextX + 1 === goSpots[j][1]) {
+          horizontal.push([[holdY, nextX], goSpots[j]]);
+          nextX = goSpots[j][1];
+        } else if (holdY !== goSpots[i][0]) {
+          holdY = goSpots[i][0];
+          horizontal = [];
+        }
+
+        //vertical line check
+        if (holdX === goSpots[j][1] && nextY + 1 === goSpots[j][0]) {
+          vertical.push([[nextY, holdX], goSpots[j]]);
+          nextY = goSpots[j][0];
+        } else if (holdX !== goSpots[i][1]) {
+          holdX = goSpots[i][1];
+          vertical = [];
+        }
+
+        // cross line check
+        if (
+          holdIncreSpot[0] - goSpots[j][0] === -1 &&
+          holdIncreSpot[1] + 1 === goSpots[j][1]
+        ) {
+          crossIncreY.push([holdIncreSpot, goSpots[j]]);
+          holdIncreSpot = [...goSpots[j]];
+          console.log("incre", JSON.stringify(crossIncreY));
+        }
+        if (
+          holdDecreSpot[0] - goSpots[j][0] === 1 &&
+          holdDecreSpot[1] - 1 === goSpots[j][1]
+        ) {
+          crossDecreY.push([holdDecreSpot, goSpots[j]]);
+          holdDecreSpot = [...goSpots[j]]; //need to check before
+          console.log("decre", JSON.stringify(crossDecreY));
+        }
+        if (crossIncreY.length === 4 || crossDecreY.length === 4) {
+          //return true;
+          crossIncreY.length > crossDecreY.length
+            ? console.log("cross", JSON.stringify(crossIncreY))
+            : console.log("corss", JSON.stringify(crossDecreY));
+          return true;
+        }
+      }
+      if (horizontal.length === 4 || vertical.length === 4) {
+        //return true
+        horizontal.length > vertical.length
+          ? console.log("hr", JSON.stringify(horizontal))
+          : console.log("vr", JSON.stringify(vertical));
+        return true;
+      }
+    }
+    return null;
+  }
+  //victory judge function?
+  function victoryJudge() {
+    const black = [];
+    const white = [];
+    for (let i = 0; i < steps.length; i++) {
+      if (i % 2) {
+        white.push(steps[i]);
+      } else {
+        black.push(steps[i]);
+      }
+    }
+    //console.log(JSON.stringify(black));
+    //console.log(JSON.stringify(white));
+    const blackWin = checkLine(black);
+    const whiteWin = checkLine(white);
+    if (blackWin) {
+      alert("Black Won");
+    } else if (whiteWin) {
+      alert("white Won");
+    }
+  }
+
+  if (steps.length > 8) {
+    victoryJudge();
+  }
+
   return (
     <>
       <GameTitle>Gomoku Game</GameTitle>
       <GameWrapper>
-        <BoardRowsGroup />
-        <GameSteps>
-          <GameStepsTitle>Progress</GameStepsTitle>
-          <GameStepsContent>Black go first.</GameStepsContent>
-        </GameSteps>
+        <GamePositionContext.Provider
+          value={{ blackIsNext, setBlackIsNext, steps, setSteps }}
+        >
+          <Board />
+          <GameSteps>
+            <GameStepsTitle>Progress</GameStepsTitle>
+            <GameStepsPresent>{`Present Move : ${
+              blackIsNext ? "Black" : "White"
+            }`}</GameStepsPresent>
+            <GameStepsWrapper>
+              {steps.map((step, index) => (
+                <GameStepsContent key={`step-${index + 1}`}>
+                  {`${index + 1}. ${
+                    (index + 1) % 2 ? "Black" : "White"
+                  } Move on: ${step.join("-")}`}
+                </GameStepsContent>
+              ))}
+            </GameStepsWrapper>
+          </GameSteps>
+        </GamePositionContext.Provider>
       </GameWrapper>
     </>
   );
