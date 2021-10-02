@@ -37,11 +37,11 @@ const WhiteGo = styled.div`
 
 export default function GoSpot({ position }) {
   const [goValue, setGoValue] = useState(null);
-  const { blackIsNext, setBlackIsNext, steps, setSteps } =
+  const { blackIsNext, setBlackIsNext, steps, setSteps, winner } =
     useContext(GamePositionContext);
   const handleGoClick = (e) => {
     const isOccupied = e.target.getAttribute("data-occupied");
-    if (isOccupied === "false") {
+    if (isOccupied === "false" && !winner) {
       const pos = e.target.getAttribute("data-position");
       setSteps([...steps, pos.split("-").map((i) => Number(i))]);
       setGoValue(blackIsNext ? <BlackGo /> : <WhiteGo />);
