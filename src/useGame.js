@@ -40,6 +40,15 @@ function checkWinner(goSpots) {
     const horizontalCombo = linearLineExpect(goSpots[i], "horizontal");
     const verticalCombo = linearLineExpect(goSpots[i], "vertical");
 
+    if (
+      crossRightCombo === undefined ||
+      crossLeftCombo === undefined ||
+      horizontalCombo === undefined ||
+      verticalCombo === undefined
+    ) {
+      break;
+    }
+
     const crossRightFit = [];
     const crossLeftFit = [];
     const horizontalFit = [];
