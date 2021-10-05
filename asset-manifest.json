@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/gomoku-game_react/static/css/main.6dea0f05.chunk.css",
+    "main.js": "/gomoku-game_react/static/js/main.1ec3cfdb.chunk.js",
+    "main.js.map": "/gomoku-game_react/static/js/main.1ec3cfdb.chunk.js.map",
+    "runtime-main.js": "/gomoku-game_react/static/js/runtime-main.5d5ddb94.js",
+    "runtime-main.js.map": "/gomoku-game_react/static/js/runtime-main.5d5ddb94.js.map",
+    "static/js/2.2480cce1.chunk.js": "/gomoku-game_react/static/js/2.2480cce1.chunk.js",
+    "static/js/2.2480cce1.chunk.js.map": "/gomoku-game_react/static/js/2.2480cce1.chunk.js.map",
+    "static/js/3.26da1dd4.chunk.js": "/gomoku-game_react/static/js/3.26da1dd4.chunk.js",
+    "static/js/3.26da1dd4.chunk.js.map": "/gomoku-game_react/static/js/3.26da1dd4.chunk.js.map",
+    "index.html": "/gomoku-game_react/index.html",
+    "static/css/main.6dea0f05.chunk.css.map": "/gomoku-game_react/static/css/main.6dea0f05.chunk.css.map",
+    "static/js/2.2480cce1.chunk.js.LICENSE.txt": "/gomoku-game_react/static/js/2.2480cce1.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.5d5ddb94.js",
+    "static/js/2.2480cce1.chunk.js",
+    "static/css/main.6dea0f05.chunk.css",
+    "static/js/main.1ec3cfdb.chunk.js"
+  ]
+}
