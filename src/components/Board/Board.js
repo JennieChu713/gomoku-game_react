@@ -1,7 +1,6 @@
 import React from "react";
 import styled from "styled-components";
 import GoSpot from "../Go/GoSpot";
-import { GamePositionContext } from "../../GamePositionContext";
 
 // chest board
 const BoardContainer = styled.section`

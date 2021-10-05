@@ -67,7 +67,6 @@ function checkWinner(goSpots) {
       horizontalFit.length === 5 ||
       verticalFit.length === 5
     ) {
-      console.log("there is a fit");
       return true;
     }
   }
@@ -90,16 +89,14 @@ export default function useGame() {
         black.push(steps[i]);
       }
     }
-    //console.log(JSON.stringify(black));
-    //console.log(JSON.stringify(white));
     const blackWin = checkWinner(black);
     const whiteWin = checkWinner(white);
     if (blackWin) {
-      alert("Black Won");
       setWinner("Black");
+      alert("Black Won");
     } else if (whiteWin) {
-      alert("white Won");
       setWinner("White");
+      alert("white Won");
     }
   }
 

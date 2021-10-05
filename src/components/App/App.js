@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { GamePositionContext } from "../../GamePositionContext";
 import Board from "../Board";
 import gameComponents from "../GameComponents";
